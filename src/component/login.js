@@ -10,6 +10,7 @@ export default class Login extends React.Component {
         super(props);
         this.state = {
             signUpTrue: false,
+            userSigned: false,
             userInfo: {},
             loggedIn: false
         }
@@ -38,6 +39,7 @@ export default class Login extends React.Component {
         const signUpPassword = document.getElementById('signup-password').value;
         const signUpPasswordConfirmed = document.getElementById('signup-password-confirmed').value;
         const signUpEmail = document.getElementById('signup-email').value;
+        console.log(signUpUsername, signUpPassword, signUpPasswordConfirmed, signUpEmail);
         try {
             if (signUpPassword === signUpPasswordConfirmed) {
                 const { user } = await Auth.signUp({
@@ -47,6 +49,7 @@ export default class Login extends React.Component {
                         email: signUpEmail,
                     }
                 });
+                this.setState({userInfo: user, userSigned: true })
                 console.log(user);
                 const result = { Items: user };
                 return getSuccessResponse(result, 200);
@@ -64,6 +67,15 @@ export default class Login extends React.Component {
         } catch (e) {
             console.log(e);
         }
+    }
+    userConfirmByCode = async () => {
+        console.log(this.state.userInfo);
+        const code = document.getElementById('userConfirmCode').value;
+        const result = await Auth.confirmSignUp(this.state.userInfo.username, code);
+        alert(result);
+    }
+    resendConfirmCode = async () => {
+        await Auth.resendSignUp(this.state.userInfo.username);
     }
     renderLogin = () => {
         return (
@@ -95,7 +107,7 @@ export default class Login extends React.Component {
                             <div className="pass-link">
                                 <a href="#">Forgot password?</a>
                             </div>
-                            <input type="button" value="Login" id="login-button" onClick={this.login} />
+                            <input type="button" value="Login test" id="login-button" onClick={this.login} />
                             <div className="field btn">
                                 <div className="btn-layer"/>
                                 <input type="submit" value="Login" id="login-button" onClick={this.login} />
@@ -139,6 +151,7 @@ export default class Login extends React.Component {
                             <div className="field">
                                 <input type="password" placeholder="Confirm Password" id="signup-password-confirmed" required/>
                             </div>
+                            <input type="button" value="Signup test" onClick={this.signUp}/>
                             <div className="field btn">
                                 <div className="btn-layer"/>
                                 <input type="submit" value="Signup" onClick={this.signUp}/>
@@ -156,7 +169,23 @@ export default class Login extends React.Component {
     //         </div>
     //     )
     // }
-    renderSigned = (user) => {
+    renderConfirmVerification = () => {
+        return (
+            <div>
+                <div>
+                    <h3>Enter Verification Code</h3>
+                </div>
+                <div>
+                    <input type='text' placeholder='Verification Code' id='userConfirmCode'/>
+                    <input type='button' value='Confirm' onClick={this.userConfirmByCode} />
+                </div>
+                <div>
+                    <input type='button' value='Resend activation code' onClick={this.resendConfirmCode} />
+                </div>
+            </div>
+        )
+    }
+    renderSigned = () => {
         return (
             <div>
                 <div>
@@ -177,6 +206,7 @@ export default class Login extends React.Component {
             if (this.state.loggedIn) return this.renderSigned();
             else return this.renderLogin();
         }
-        else return this.renderSignUp();
+        else if (this.state.userSigned) return this.renderConfirmVerification();
+            else return this.renderSignUp();
     }
 }
