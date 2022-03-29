@@ -1,5 +1,6 @@
 import AWS from 'aws-sdk';
-AWS.config.update({region: 'eu-north-1', accessKeyId: 'AKIAQLXVAAMMSVKM2V6B', secretAccessKey: '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'});
+import env from "react-dotenv";
+AWS.config.update({region: env.REGION, accessKeyId: env.ACCESS_KEY_ID, secretAccessKey: env.SECRET_KEY_ID});
 export const dynamoDB = new AWS.DynamoDB.DocumentClient();
 
 export const getItem = async (params) => {
