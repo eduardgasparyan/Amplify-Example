@@ -3,7 +3,7 @@ import '../style/style.css'
 import getSuccessResponse from '../utils/getSuccessResponse'
 import {Amplify, Auth} from 'aws-amplify';
 import awsExports from '../aws-exports';
-import axios from "axios";
+import {Navigate} from "react-router-dom";
 Amplify.configure(awsExports);
 export default class Login extends React.Component {
     constructor(props) {
@@ -11,8 +11,7 @@ export default class Login extends React.Component {
         this.state = {
             signUpTrue: false,
             userSigned: false,
-            userInfo: {},
-            loggedIn: false
+            loggedIn: false,
         }
     }
     signUpFormSlide = () => {
@@ -56,17 +55,6 @@ export default class Login extends React.Component {
             }
             else alert('Password is not match!');
         } catch (error) { console.log(error); }
-    }
-    userAddCar = () => {
-        const carName = document.getElementById('addingCarName').value;
-        try {
-            axios.post(
-                `https://lldkgnmqmf.execute-api.eu-north-1.amazonaws.com/edtest1/users/${this.state.userInfo.pool.clientId}/cars`, {carName})
-                .then((response) => { this.setState({response: response.status});
-                    console.log(this.state.response) });
-        } catch (e) {
-            console.log(e);
-        }
     }
     userConfirmByCode = async () => {
         console.log(this.state.userInfo);
@@ -162,13 +150,6 @@ export default class Login extends React.Component {
             </div>
         )
     }
-    // renderReset = () => {
-    //     return (
-    //         <div className="wrapper">
-    //             <input type=text placeholder="Enter your email" />
-    //         </div>
-    //     )
-    // }
     renderConfirmVerification = () => {
         return (
             <div>
@@ -185,25 +166,9 @@ export default class Login extends React.Component {
             </div>
         )
     }
-    renderSigned = () => {
-        return (
-            <div>
-                <div>
-                    <h3>Hi { this.state.userInfo.username }</h3>
-                </div>
-                <div>
-                    Your car list.
-                </div>
-                <div>
-                    <input type='text' placeholder='Car Name' id='addingCarName'/>
-                    <input type='button' value='Add Car' onClick={this.userAddCar} />
-                </div>
-            </div>
-        )
-    }
     render = () => {
         if (!this.state.signUpTrue) {
-            if (this.state.loggedIn) return this.renderSigned();
+            if (this.state.loggedIn) return <Navigate to="/user" replace={true} />;
             else return this.renderLogin();
         }
         else if (this.state.userSigned) return this.renderConfirmVerification();

@@ -1,0 +1,10 @@
+{
+  "resourceName": "cars",
+  "tableName": "cars",
+  "partitionKey": {
+    "fieldName": "carId",
+    "fieldType": "string"
+  },
+  "gsi": [],
+  "triggerFunctions": []
+}

@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "paths": {
+    "/amplify/backend/api": {
+      "name": "/amplify/backend/api",
+      "lambdaFunction": "m",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    }
+  }
+}
