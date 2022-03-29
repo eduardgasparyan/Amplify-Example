@@ -1,6 +1,7 @@
 import Home from './component/homePage'
-import Login from './component/login'
+import Auth from './component/auth'
 import UserHome from './component/userHome'
+import ResetPassword from "./component/resetPassword";
 import {
     BrowserRouter,
     Routes,
@@ -11,8 +12,9 @@ function App() {
     return (
             <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />}/>
+                <Route path="/login" element={<Auth />}/>
                 <Route path="/user" element={<UserHome />}/>
+                <Route path="/reset" element={<ResetPassword />}/>
             </Routes>
     );
 }

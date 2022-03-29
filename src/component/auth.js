@@ -5,10 +5,11 @@ import {Amplify, Auth} from 'aws-amplify';
 import awsExports from '../aws-exports';
 import {Navigate} from "react-router-dom";
 Amplify.configure(awsExports);
-export default class Login extends React.Component {
+export default class Authentication extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            toHome: false,
             signUpTrue: false,
             userSigned: false,
             loggedIn: false,
@@ -48,6 +49,7 @@ export default class Login extends React.Component {
                         email: signUpEmail,
                     }
                 });
+                console.log(user);
                 this.setState({userInfo: user, userSigned: true })
                 console.log(user);
                 const result = { Items: user };
@@ -60,10 +62,14 @@ export default class Login extends React.Component {
         console.log(this.state.userInfo);
         const code = document.getElementById('userConfirmCode').value;
         const result = await Auth.confirmSignUp(this.state.userInfo.username, code);
+        this.setState({signUpTrue: false, userSigned: false, loggedIn: false});
         alert(result);
     }
     resendConfirmCode = async () => {
         await Auth.resendSignUp(this.state.userInfo.username);
+    }
+    homePage = () => {
+        this.setState({ toHome: true });
     }
     renderLogin = () => {
         return (
@@ -93,9 +99,9 @@ export default class Login extends React.Component {
                                 <input type="password" placeholder="Password" id="login-password" required/>
                             </div>
                             <div className="pass-link">
-                                <a href="#">Forgot password?</a>
+                                <a href="/reset">Forgot password?</a>
                             </div>
-                            <input type="button" value="Login test" id="login-button" onClick={this.login} />
+                            <input type="button" value="Login test" id="login-test-button" onClick={this.login} />
                             <div className="field btn">
                                 <div className="btn-layer"/>
                                 <input type="submit" value="Login" id="login-button" onClick={this.login} />
@@ -153,6 +159,7 @@ export default class Login extends React.Component {
     renderConfirmVerification = () => {
         return (
             <div>
+                <input type='button' value='Home' onClick={this.homePage} />
                 <div>
                     <h3>Enter Verification Code</h3>
                 </div>
@@ -166,7 +173,9 @@ export default class Login extends React.Component {
             </div>
         )
     }
+    renderToHome = () => { return ( <Navigate to="/" replace={true} /> ); }
     render = () => {
+        if(this.state.toHome) return this.renderToHome();
         if (!this.state.signUpTrue) {
             if (this.state.loggedIn) return <Navigate to="/user" replace={true} />;
             else return this.renderLogin();
